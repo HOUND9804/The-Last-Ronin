@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static utilz.Constants.PlayerConstants.*;
+import static utilz.Constants.direction.*;
 
 public class GamePanel extends JPanel {
     public int x=10;
@@ -19,6 +20,9 @@ public class GamePanel extends JPanel {
     private BufferedImage[][]animations;
     private int aniTick,aniIndex,aniSpeed=15;
     private int playerAction=attack3;
+    private int playerDir=-1;
+    private boolean moving=false;
+
     public GamePanel(){
         importImage();
         loadAnimations();
@@ -45,7 +49,6 @@ public class GamePanel extends JPanel {
             if(aniIndex>=GetSpriteAmount(playerAction)){
                 aniIndex=0;
             }
-            System.out.println(aniIndex);
         }
     }
 
@@ -54,6 +57,13 @@ public class GamePanel extends JPanel {
         setPreferredSize(size);
         setMinimumSize(size);
         setMaximumSize(size);
+    }
+    public void setMoving(boolean moving){
+        this.moving = moving;
+    }
+    public void setDirection(int direction){
+        this.playerDir=direction;
+        moving=true;
     }
     public void importImage() {
         try (InputStream is = getClass().getResourceAsStream("/Res/Samurai.png")) {
@@ -67,10 +77,37 @@ public class GamePanel extends JPanel {
             e.printStackTrace();
         }
     }
-
+    private void setAnimation() {
+        if(moving){
+            playerAction=run;
+        }
+        else{
+            playerAction=idle;
+        }
+    }
+    private void updatePos(){
+        if(moving){
+            switch (playerDir){
+                case LEFT:x-=3;
+                    break;
+                case RIGHT:x+=3;
+                    break;
+                case UP:
+                    break;
+                case DOWN:
+                    break;
+            }
+        }
+    }
+    public void updateGame(){
+        updateAnimationTick();
+        setAnimation();
+        updatePos();
+    }
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        updateAnimationTick();
         g.drawImage(animations[playerAction][aniIndex],x,y,128*2,128*2,null);
     }
+
+
 }
