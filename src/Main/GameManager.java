@@ -1,25 +1,51 @@
 package Main;
 
+import entities.Player;
+import levels.LevelManager;
+
+import java.awt.*;
+
 public class GameManager implements Runnable {
     GamePanel gp;
     GameWindow gw;
     private Thread gameThread;
     private final int fps = 120;
     private final int ups= 200;
+
+    public static final int tileInWidth=45;
+    public static final int tileInHeight=20;
+    public final int entitywidth=128;
+    public final int entityheight=128;
+    public static final int scale=1;
+    public static final int tileSize=32;
+    public int width=tileInWidth*scale*tileSize;
+    public int height=tileInHeight*scale*tileSize;
+
+    public Player player;
+    public LevelManager levelManager;
     public GameManager() {
-        gp = new GamePanel();
+        initClasses();
+        gp = new GamePanel(this);
         gw = new GameWindow(gp);
         gp.requestFocus();
         startGameThread();
     }
-
+    private void initClasses() {
+        player=new Player(1*tileSize,11*tileSize,entitywidth,entityheight);
+        levelManager=new LevelManager(this);
+    }
     private void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
 
     public void update() {
-        gp.updateGame();
+        player.update();
+        levelManager.update();
+    }
+    public void render(Graphics g) {
+        levelManager.draw(g);
+        player.render(g);
     }
     @Override
     public void run() {

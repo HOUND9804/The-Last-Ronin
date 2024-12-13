@@ -5,6 +5,8 @@ import Main.GamePanel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import static utilz.Constants.PlayerConstants.*;
+
 public class MouseInputs implements MouseListener {
     private GamePanel gamePanel;
     public MouseInputs(GamePanel gamePanel) {
@@ -15,22 +17,40 @@ public class MouseInputs implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         switch (e.getButton()) {
             case MouseEvent.BUTTON1:
-                System.out.println("left");
+
+                if (e.isShiftDown()) {
+                    gamePanel.gm.player.setAttacking2(true);
+                }
+
+                else if (e.isControlDown()) {
+                    gamePanel.gm.player.setAttacking3(true);
+                }
+
+                else {
+                    gamePanel.gm.player.setAttacking1(true);
+                }
+                  break;
+        }
+    }
+
+
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        switch (e.getButton()) {
+            case MouseEvent.BUTTON3:  // Left click for defense
+                gamePanel.gm.player.setDefending(true);
                 break;
-            case MouseEvent.BUTTON2:
-               System.out.println("right");
-               break;
         }
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
     public void mouseReleased(MouseEvent e) {
-
+        switch (e.getButton()) {
+            case MouseEvent.BUTTON3:
+                gamePanel.gm.player.setDefending(false);
+                break;
+        }
     }
 
     @Override
